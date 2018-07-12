@@ -1,0 +1,7 @@
+vib.settings:
+  path: '/admin/config/system/vib'
+  defaults:
+    _form: 'Drupal\vib\Form\VibSettingsForm'
+    _title: 'Configure the "View in browser" processors'
+  requirements:
+    _permission: 'administer_vib'

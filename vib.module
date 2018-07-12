@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Main file for vib module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function vib_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.vib':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This module provides token with "View in browser" link for emails. Also it has UI to configure mail processors for different mail keys.') . '</p>';
+
+      return $output;
+  }
+}
