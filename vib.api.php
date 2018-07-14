@@ -11,7 +11,7 @@
  */
 
 /**
- * Alter the options list values keyed by count of seconds.
+ * Alter the lifetime options list values keyed by count of seconds.
  *
  * @param array $list
  *   An array options.

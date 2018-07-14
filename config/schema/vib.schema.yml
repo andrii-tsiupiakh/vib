@@ -14,7 +14,7 @@ vib.settings:
           mapping:
             lifetime:
               type: string
-              label: The period of links lifetime.
+              label: The period of link lifetime.
             library:
               type: string
               label: The library to attach.

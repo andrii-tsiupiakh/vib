@@ -74,7 +74,7 @@ class VibSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'vib_admin_form';
+    return 'vib_settings_form';
   }
 
   /**
@@ -94,7 +94,7 @@ class VibSettingsForm extends ConfigFormBase {
     $form['custom'] = [
       '#type' => 'details',
       '#title' => $this->t('Processors configuration'),
-      '#description' => $this->t('Here you can split mails by module and key. Set drupal library to attach to the browser mail variant and also set a lifetime of "View in browser" links.'),
+      '#description' => $this->t('Here you can split mails by module and key. Set drupal library to attach to the browser variant of the email and also set a lifetime of "View in browser" links.'),
       '#open' => TRUE,
       '#tree' => TRUE,
     ];
@@ -151,9 +151,7 @@ class VibSettingsForm extends ConfigFormBase {
       if (is_array($module_settings) && $this->moduleHandler->moduleExists($module)) {
         // Main table structure.
         foreach ($module_settings as $key => $settings) {
-
           $module_key = $module . '.' . $key;
-
           $row = [
             'module' => ['#markup' => $this->moduleHandler->getName($module)],
             'key' => ['#markup' => $key == 'none' ? $this->t('All') : $key],
@@ -296,7 +294,7 @@ class VibSettingsForm extends ConfigFormBase {
    */
   protected function getLifetimeOptions() {
     $list = [
-      '_none' => $this->t('- Permanent -'),
+      '-1' => $this->t('- Permanent -'),
       '86400' => $this->t('1 day'),
       '604800' => $this->t('1 week'),
       '2628000' => $this->t('1 month'),
