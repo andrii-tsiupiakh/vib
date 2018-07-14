@@ -5,3 +5,11 @@ vib.settings:
     _title: 'Configure the "View in browser" processors'
   requirements:
     _permission: 'administer_vib'
+
+vib.page:
+  path: '/vib/{id}/{token}'
+  defaults:
+    _controller: 'Drupal\vib\Controller\VibController::page'
+    _title: 'View email'
+  requirements:
+    _access: 'TRUE'
