@@ -97,3 +97,30 @@ function _vib_get_processor_data($module, $key) {
 
   return NULL;
 }
+
+/**
+ * Implements hook_cron().
+ */
+function vib_cron() {
+  $interval = \Drupal::config('vib.settings')->get('cron_job_time');
+  $interval = !empty($interval) ? (int) $interval : 86400;
+
+  $last_run = \Drupal::state()->get('vib.delete_last_run', 0);
+  $time = \Drupal::time()->getRequestTime();
+  if (($time - $last_run) > $interval) {
+    $vib_links = \Drupal::entityQuery('vib_link')
+      ->condition('deleted', $time, '>')
+      ->execute();
+
+    if ($vib_links) {
+      $links = VibLink::loadMultiple($vib_links);
+      /** @var \Drupal\vib\Entity\VibLinkInterface $link */
+      foreach ($links as $link) {
+        $link->delete();
+      }
+    }
+
+    \Drupal::state()->set('vib.delete_last_run', $time);
+  }
+
+}

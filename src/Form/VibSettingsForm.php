@@ -90,6 +90,14 @@ class VibSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('vib.settings');
 
+    $form['cron_job_time'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Run cron job every'),
+      '#description' => $this->t('Select the period of time when vib_link entities will be added to the delete queue.'),
+      '#options' => $this->getCronTimeList(),
+      '#default_value' => $config->get('cron_job_time'),
+    ];
+
     // Fieldset for custom module configuration.
     $form['custom'] = [
       '#type' => 'details',
@@ -230,6 +238,8 @@ class VibSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->config('vib.settings');
+
+    $config->set('cron_job_time', $form_state->getValue('cron_job_time'));
     // Update or remove the custom modules.
     if ($form_state->hasValue(['custom', 'modules']) && is_array($form_state->getValue(['custom', 'modules']))) {
       foreach ($form_state->getValue(['custom', 'modules'], []) as $module_key => $settings) {
@@ -320,6 +330,23 @@ class VibSettingsForm extends ConfigFormBase {
       $list[$module] = $this->moduleHandler->getName($module);
     }
     asort($list);
+
+    return $list;
+  }
+
+  /**
+   * Returns a list of time for 'put in queue' cron job.
+   *
+   * @return string[]
+   *   List of time options.
+   */
+  protected function getCronTimeList() {
+    $list = [
+      '3600' => $this->t('1 hour'),
+      '10800' => $this->t('3 hours'),
+      '21600' => $this->t('6 hours'),
+      '86400' => $this->t('1 day'),
+    ];
 
     return $list;
   }

@@ -2,6 +2,9 @@ vib.settings:
   type: config_object
   label: View in browser processors settings.
   mapping:
+    cron_job_time:
+      type: string
+      label: The cron job running period.
     modules:
       type: sequence
       label: List of modules.
