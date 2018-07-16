@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Url;
 use Drupal\vib\Entity\VibLink;
 
 /**
@@ -17,7 +16,7 @@ function vib_help($route_name, RouteMatchInterface $route_match) {
     case 'help.page.vib':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('This module provides token [vib_link] with "View in browser" link for emails. Also it has UI to configure mail processors for different mail keys.') . '</p>';
+      $output .= '<p>' . t('This module provides token [vib:link] with "View in browser" link for emails. Also it has UI to configure mail processors for different mail keys.') . '</p>';
 
       return $output;
   }
@@ -33,7 +32,7 @@ function vib_mail_alter(array &$message) {
   $body = implode('', $body);
 
   $processor_data = _vib_get_processor_data($module, $key);
-  if ($processor_data && strpos($body, '[vib_link]') !== FALSE) {
+  if ($processor_data && strpos($body, '[vib:link]') !== FALSE) {
     $deleted = isset($processor_data['lifetime']) ? (int) $processor_data['lifetime'] : -1;
     $lib = isset($processor_data['lib']) ? $processor_data['lib'] : '_none';
 
@@ -46,29 +45,15 @@ function vib_mail_alter(array &$message) {
     $values = [
       'library' => $lib,
       'deleted' => $deleted,
-      'email_body' => str_replace('[vib_link]', '', $body),
+      'email_body' => str_replace('[vib:link]', '', $body),
     ];
 
     $vib = VibLink::create($values);
     $vib->save();
 
-    $args = ['id' => $vib->id(), 'token' => $vib->getToken()];
-    $options = [
-      'language' => \Drupal::languageManager()
-        ->getLanguage($message['langcode']),
-    ];
-    $url = Url::fromRoute('vib.page', $args, $options);
-    $url->setAbsolute();
-    $link = [
-      '#type' => 'link',
-      '#title' => t('View in browser', [], ['langcode' => $message['langcode']]),
-      '#url' => $url,
-    ];
-
-    $link = \Drupal::service('renderer')->render($link);
-
     foreach ($message['body'] as &$el) {
-      $el = str_replace('[vib_link]', $link, $el);
+      $el = \Drupal::token()
+        ->replace($el, ['vib_link' => $vib], ['langcode' => $message['langcode']]);
     }
   }
 }
