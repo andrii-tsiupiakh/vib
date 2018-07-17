@@ -42,14 +42,15 @@ function vib_tokens($type, $tokens, array $data, array $options, BubbleableMetad
           $vib = $data['vib_link'];
 
           $args = ['id' => $vib->id(), 'token' => $vib->getToken()];
-          $options = [
+          $url_options = [
             'language' => \Drupal::languageManager()
               ->getLanguage($options['langcode']),
           ];
-          $url = Url::fromRoute('vib.page', $args, $options);
+          $url = Url::fromRoute('vib.page', $args, $url_options);
           $url->setAbsolute();
           $link = [
             '#type' => 'link',
+            '#attributes' => ['rel' => 'nofollow'],
             '#title' => t('View in browser', [], ['langcode' => $options['langcode']]),
             '#url' => $url,
           ];
