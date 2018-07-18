@@ -94,7 +94,7 @@ function vib_cron() {
   $time = \Drupal::time()->getRequestTime();
   if (($time - $last_run) > $interval) {
     $vib_links = \Drupal::entityQuery('vib_link')
-      ->condition('deleted', $time, '>')
+      ->condition('deleted', $time, '<')
       ->execute();
 
     if ($vib_links) {
